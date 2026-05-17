@@ -3,7 +3,7 @@
  * Altere apenas SUPABASE_URL e SUPABASE_ANON_KEY para conectar ao seu projeto.
  */
 
-export const SUPABASE_URL = 'https://oscuwqgflgumifejqyoq.supabase.co';
+export const SUPABASE_URL = 'https://oscuwqgflgumlfejqyoq.supabase.co';
 export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3V3cWdmbGd1bWxmZWpxeW9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3ODI5MDYsImV4cCI6MjA5NDM1ODkwNn0.I1f4Wu5U2LA_7NcOP_TrA7H2N460lOectZ1oxnDO2Cc';
 
 export const NOTIF_SOUND_URL = 'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3';

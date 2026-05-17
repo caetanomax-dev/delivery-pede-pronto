@@ -137,10 +137,10 @@ function _renderHistorico() {
   let pagHtml = '';
   if (pages > 1) {
     pagHtml += `<span class="hist-pag-info">${start + 1}–${Math.min(start + HIST_PER_PAGE, total)} de ${total}</span>`;
-    if (_histPage > 0) pagHtml += `<button class="hist-pag-btn" onclick="Pedidos._histPage(${_histPage - 1})">‹</button>`;
+    if (_histPage > 0) pagHtml += `<button class="hist-pag-btn" onclick="Pedidos.goHistPage(${_histPage - 1})">‹</button>`;
     for (let i = 0; i < pages; i++) {
       if (Math.abs(i - _histPage) <= 2 || i === 0 || i === pages - 1)
-        pagHtml += `<button class="hist-pag-btn${i === _histPage ? ' active' : ''}" onclick="Pedidos._histPage(${i})">${i + 1}</button>`;
+        pagHtml += `<button class="hist-pag-btn${i === _histPage ? ' active' : ''}" onclick="Pedidos.goHistPage(${i})">${i + 1}</button>`;
       else if (Math.abs(i - _histPage) === 3)
         pagHtml += `<span style="color:var(--muted);padding:0 4px">…</span>`;
     }
@@ -245,7 +245,7 @@ export function print(id) {
   });
 }
 
-export function _histPage(p) { _histPage = p; _renderHistorico(); }
+export function goHistPage(p) { _histPage = p; _renderHistorico(); }
 
 // Expõe para onclick inline do HTML do módulo
-window.Pedidos = { refresh, advance, openDetail, wpp, print, _histPage };
+window.Pedidos = { refresh, advance, openDetail, wpp, print, goHistPage };
