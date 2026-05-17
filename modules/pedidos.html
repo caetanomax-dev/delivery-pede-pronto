@@ -1,0 +1,47 @@
+<!-- modules/pedidos.html — Módulo de Pedidos (Kanban + Histórico) -->
+
+<div style="display:flex;flex-direction:column;gap:22px">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <h2 class="page-title">📋 Pedidos</h2>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div class="rt-dot"><div class="rt-pulse"></div>Tempo real</div>
+      <button class="btn btn-ghost btn-sm" onclick="Pedidos.refresh()">🔄 Atualizar</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid" id="order-stats">
+    <div class="stat-card"><div class="spinner" style="width:20px;height:20px;margin:0"></div></div>
+  </div>
+
+  <!-- Kanban -->
+  <div id="kanban-wrap">
+    <div class="loading-wrap"><div class="spinner"></div></div>
+  </div>
+
+  <!-- Histórico finalizados -->
+  <div id="historico-section" style="display:none">
+    <div class="hist-header">
+      <div class="hist-title">✅ Pedidos Finalizados Hoje</div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="hist-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Hora</th>
+            <th>Cliente</th>
+            <th>Pagamento</th>
+            <th>Total</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="hist-body"></tbody>
+      </table>
+    </div>
+    <div id="hist-pag" class="hist-pag"></div>
+  </div>
+
+</div>

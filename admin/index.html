@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>DeliveryOS — Admin</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/global.css"/>
+  <link rel="stylesheet" href="../assets/css/admin.css"/>
+</head>
+<body>
+
+<!-- Infraestrutura global -->
+<div id="print-area"></div>
+<div id="toast-wrap"></div>
+<div id="modal-wrap"></div>
+<button id="sb-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-icon" id="sb-icon">🏪</div>
+    <div>
+      <div class="sb-logo-name" id="sb-name">DeliveryOS</div>
+      <div class="sb-logo-sub">Painel Admin</div>
+    </div>
+  </div>
+
+  <div class="sb-nav">
+    <div class="sb-section">Principal</div>
+    <div class="sb-item active" data-mod="pedidos" onclick="Admin.loadModule('pedidos', this)">
+      <span class="sb-icon">📋</span>Pedidos
+      <span class="sb-badge" id="new-badge" style="display:none">0</span>
+    </div>
+
+    <div class="sb-section">Loja</div>
+    <div class="sb-item" data-mod="produtos" onclick="Admin.loadModule('produtos', this)">
+      <span class="sb-icon">📦</span>Produtos
+    </div>
+    <div class="sb-item" data-mod="categorias" onclick="Admin.loadModule('categorias', this)">
+      <span class="sb-icon">🏷️</span>Categorias
+    </div>
+
+    <div class="sb-section">Sistema</div>
+    <div class="sb-item" data-mod="relatorios" onclick="Admin.loadModule('relatorios', this)">
+      <span class="sb-icon">📊</span>Relatórios
+    </div>
+    <div class="sb-item" data-mod="configuracoes" onclick="Admin.loadModule('configuracoes', this)">
+      <span class="sb-icon">⚙️</span>Configurações
+    </div>
+  </div>
+
+  <div class="sb-bottom">
+    <a class="sb-link" href="../index.html" target="_blank">🔗 Ver Cardápio →</a>
+  </div>
+</nav>
+
+<!-- MAIN — container onde os módulos são injetados -->
+<main id="main">
+  <div id="module-container" style="flex:1;padding:28px;max-width:1400px;width:100%">
+    <div class="loading-wrap"><div class="spinner"></div><p>Carregando...</p></div>
+  </div>
+</main>
+
+<script type="module">
+import { db } from '../assets/js/core/supabase.js';
+import { applyTheme, toast } from '../assets/js/core/ui.js';
+import { startOrdersRealtime } from '../assets/js/core/realtime.js';
+import State from '../assets/js/core/state.js';
+import { ge } from '../assets/js/core/helpers.js';
+
+// Cache de módulos já carregados (evita recarregar JS)
+const _loadedModules = {};
+let _currentMod = null;
+
+/**
+ * loadModule — carrega HTML + JS do módulo solicitado
+ * HTML vem de /modules/{name}.html
+ * JS  vem de /assets/js/modules/{name}.js
+ */
+async function loadModule(name, navEl) {
+  if (_currentMod === name) return;
+  _currentMod = name;
+
+  // Sidebar active state
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  document.getElementById('sidebar').classList.remove('open');
+
+  const container = ge('module-container');
+  container.innerHTML = `<div class="loading-wrap"><div class="spinner"></div></div>`;
+
+  // Load HTML
+  try {
+    const res = await fetch(`../modules/${name}.html`);
+    if (!res.ok) throw new Error(`Módulo ${name} não encontrado`);
+    container.innerHTML = await res.text();
+  } catch (err) {
+    container.innerHTML = `<div class="loading-wrap"><p style="color:var(--accent)">❌ ${err.message}</p></div>`;
+    return;
+  }
+
+  // Load + init JS (only once)
+  if (!_loadedModules[name]) {
+    const mod = await import(`../assets/js/modules/${name}.js`);
+    _loadedModules[name] = mod;
+  }
+  const mod = _loadedModules[name];
+  if (mod.init) mod.init();
+}
+
+// ─── REALTIME BADGE ──────────────────────────────────────────────────────────
+
+function updateBadge() {
+  const count = State.get('newCount');
+  const b = ge('new-badge');
+  if (!b) return;
+  b.textContent = count;
+  b.style.display = count > 0 ? 'inline-block' : 'none';
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+
+async function init() {
+  // Load config
+  const { data: cfg } = await db.from('configuracoes').select('*').eq('id', 1).single();
+  if (cfg) {
+    State.set('config', cfg);
+    applyTheme(cfg);
+    ge('sb-name').textContent = cfg.nome_fantasia || 'DeliveryOS';
+    if (cfg.logo_emoji) ge('sb-icon').textContent = cfg.logo_emoji;
+  }
+
+  // Load categories into state (used by produtos/config modules)
+  const { data: cats } = await db.from('categorias').select('*').order('ordem');
+  State.set('categories', cats || []);
+
+  // Start realtime for badge
+  startOrdersRealtime({
+    onInsert: (order) => {
+      State.update('newCount', n => n + 1);
+      updateBadge();
+      toast(`🔔 Novo pedido de ${order.cliente_nome}!`, 'info');
+      // Delegate to pedidos module if active
+      if (_currentMod === 'pedidos' && _loadedModules.pedidos?.onNewOrder) {
+        _loadedModules.pedidos.onNewOrder(order);
+      }
+    },
+    onUpdate: (order) => {
+      if (_currentMod === 'pedidos' && _loadedModules.pedidos?.onOrderUpdate) {
+        _loadedModules.pedidos.onOrderUpdate(order);
+      }
+    },
+  });
+
+  // Load default module
+  loadModule('pedidos', document.querySelector('[data-mod="pedidos"]'));
+}
+
+// Expose to window for sidebar onclick
+window.Admin = { loadModule };
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

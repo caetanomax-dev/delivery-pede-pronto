@@ -1,0 +1,25 @@
+<!-- modules/produtos.html — Módulo de Produtos -->
+
+<div style="display:flex;flex-direction:column;gap:22px">
+  <div class="page-header">
+    <h2 class="page-title">📦 Produtos</h2>
+    <button class="btn btn-primary" onclick="Produtos.openForm()">+ Novo Produto</button>
+  </div>
+
+  <!-- Filtros -->
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <div class="field" style="flex:1;min-width:200px">
+      <input placeholder="🔍 Buscar produto..." oninput="Produtos.filter(this.value)" style="width:100%"/>
+    </div>
+    <div class="field" style="min-width:180px">
+      <select id="prod-cat-filter" onchange="Produtos.filter()" style="width:100%">
+        <option value="">Todas as categorias</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Lista -->
+  <div id="prod-list" style="display:flex;flex-direction:column;gap:10px">
+    <div class="loading-wrap"><div class="spinner"></div></div>
+  </div>
+</div>

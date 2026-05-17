@@ -1,0 +1,27 @@
+<!-- modules/relatorios.html — Módulo de Relatórios -->
+
+<div style="display:flex;flex-direction:column;gap:22px">
+  <div class="page-header">
+    <h2 class="page-title">📊 Relatórios</h2>
+  </div>
+
+  <!-- Quick buttons -->
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-ghost" onclick="Relatorios.load('hoje')">📅 Hoje</button>
+    <button class="btn btn-ghost" onclick="Relatorios.load('semana')">📆 Últimos 7 dias</button>
+    <button class="btn btn-ghost" onclick="Relatorios.load('mes')">🗓️ Este mês</button>
+  </div>
+
+  <!-- Custom range -->
+  <div class="card">
+    <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--text2)">Período personalizado</div>
+    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+      <div class="field"><label>Data início</label><input id="rel-inicio" type="date"/></div>
+      <div class="field"><label>Data fim</label><input id="rel-fim" type="date"/></div>
+      <button class="btn btn-primary" onclick="Relatorios.loadCustom()">🔍 Gerar</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="relatorio-resultado" style="display:none"></div>
+</div>

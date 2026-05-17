@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Cardápio</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/global.css"/>
+  <link rel="stylesheet" href="assets/css/cardapio.css"/>
+</head>
+<body>
+
+<div id="toast-wrap"></div>
+<div id="modal-wrap"></div>
+
+<!-- HEADER -->
+<header id="hdr">
+  <div id="hdr-logo">
+    <div id="hdr-icon">🏪</div>
+    <span id="hdr-name">Cardápio</span>
+  </div>
+  <button id="cart-btn" onclick="Cardapio.openCart()">
+    🛒 Carrinho
+    <span id="cart-count">0</span>
+  </button>
+</header>
+
+<!-- CATEGORY BAR -->
+<div id="cat-wrap">
+  <div id="cat-bar"></div>
+</div>
+
+<!-- MENU PAGE -->
+<div id="menu-page">
+  <!-- HERO -->
+  <section id="hero">
+    <span id="hero-emoji">🏪</span>
+    <h1 id="hero-name">Nossa Loja</h1>
+    <p id="hero-desc">Faça seu pedido agora</p>
+    <div class="hero-pills">
+      <span class="hero-pill">⚡ Entrega rápida</span>
+      <span class="hero-pill">💳 Vários pagamentos</span>
+      <span class="hero-pill">📱 Acompanhe em tempo real</span>
+    </div>
+  </section>
+
+  <!-- LOADING SKELETON -->
+  <div id="menu-loader">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div id="menu-content" style="display:none">
+    <div id="prod-wrap">
+      <p class="section-label" id="prod-section-label">Todos os produtos</p>
+      <div id="prod-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TRACKING PAGE -->
+<div id="track-page">
+  <div style="padding:28px 24px;max-width:520px;margin:0 auto">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+      <button onclick="Cardapio.backToMenu()" class="btn btn-ghost btn-sm">← Voltar</button>
+      <h2 id="track-label" style="font-size:18px;font-weight:800"></h2>
+    </div>
+    <div class="card" style="margin-bottom:18px">
+      <div id="track-steps"></div>
+    </div>
+    <div id="track-summary" class="card" style="display:none"></div>
+  </div>
+</div>
+
+<!-- FAB MOBILE -->
+<button id="cart-fab-mobile" onclick="Cardapio.openCart()">
+  🛒 <span id="fab-count">0 itens</span>
+</button>
+
+<script type="module" src="assets/js/cardapio.js"></script>
+</body>
+</html>
