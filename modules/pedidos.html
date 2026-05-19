@@ -1,4 +1,4 @@
-<!-- modules/pedidos.html — Módulo de Pedidos (Kanban + Histórico) -->
+<!-- modules/pedidos.html — Módulo de Pedidos (Kanban + Histórico + Fechamento) -->
 
 <div style="display:flex;flex-direction:column;gap:22px">
 
@@ -8,6 +8,7 @@
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
       <div class="rt-dot"><div class="rt-pulse"></div>Tempo real</div>
       <button class="btn btn-ghost btn-sm" onclick="Pedidos.refresh()">🔄 Atualizar</button>
+      <button class="btn btn-primary btn-sm" onclick="Pedidos.openFechamento()">📊 Fechamento do Dia</button>
     </div>
   </div>
 
@@ -24,7 +25,7 @@
   <!-- Histórico finalizados -->
   <div id="historico-section" style="display:none">
     <div class="hist-header">
-      <div class="hist-title">✅ Pedidos Finalizados Hoje</div>
+      <div class="hist-title">✅ Pedidos Finalizados</div>
     </div>
     <div class="card" style="padding:0;overflow:hidden">
       <table class="hist-table">

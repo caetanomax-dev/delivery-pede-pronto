@@ -11,7 +11,6 @@
 </head>
 <body>
 
-<!-- Infraestrutura global -->
 <div id="print-area"></div>
 <div id="toast-wrap"></div>
 <div id="modal-wrap"></div>
@@ -56,7 +55,7 @@
   </div>
 </nav>
 
-<!-- MAIN — container onde os módulos são injetados -->
+<!-- MAIN -->
 <main id="main">
   <div id="module-container" style="flex:1;padding:28px;max-width:1400px;width:100%">
     <div class="loading-wrap"><div class="spinner"></div><p>Carregando...</p></div>
@@ -70,28 +69,26 @@ import { startOrdersRealtime } from '../assets/js/core/realtime.js';
 import State from '../assets/js/core/state.js';
 import { ge } from '../assets/js/core/helpers.js';
 
-// Cache de módulos já carregados (evita recarregar JS)
 const _loadedModules = {};
 let _currentMod = null;
 
-/**
- * loadModule — carrega HTML + JS do módulo solicitado
- * HTML vem de /modules/{name}.html
- * JS  vem de /assets/js/modules/{name}.js
- */
 async function loadModule(name, navEl) {
   if (_currentMod === name) return;
   _currentMod = name;
 
-  // Sidebar active state
   document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
   if (navEl) navEl.classList.add('active');
   document.getElementById('sidebar').classList.remove('open');
 
+  // Zera badge ao entrar em pedidos
+  if (name === 'pedidos') {
+    State.set('newCount', 0);
+    _updateBadge();
+  }
+
   const container = ge('module-container');
   container.innerHTML = `<div class="loading-wrap"><div class="spinner"></div></div>`;
 
-  // Load HTML
   try {
     const res = await fetch(`../modules/${name}.html`);
     if (!res.ok) throw new Error(`Módulo ${name} não encontrado`);
@@ -101,7 +98,6 @@ async function loadModule(name, navEl) {
     return;
   }
 
-  // Load + init JS (only once)
   if (!_loadedModules[name]) {
     const mod = await import(`../assets/js/modules/${name}.js`);
     _loadedModules[name] = mod;
@@ -110,20 +106,16 @@ async function loadModule(name, navEl) {
   if (mod.init) mod.init();
 }
 
-// ─── REALTIME BADGE ──────────────────────────────────────────────────────────
-
-function updateBadge() {
-  const count = State.get('newCount');
+function _updateBadge() {
+  const count = State.get('newCount') || 0;
   const b = ge('new-badge');
   if (!b) return;
   b.textContent = count;
   b.style.display = count > 0 ? 'inline-block' : 'none';
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-
 async function init() {
-  // Load config
+  // Carrega config
   const { data: cfg } = await db.from('configuracoes').select('*').eq('id', 1).single();
   if (cfg) {
     State.set('config', cfg);
@@ -132,17 +124,18 @@ async function init() {
     if (cfg.logo_emoji) ge('sb-icon').textContent = cfg.logo_emoji;
   }
 
-  // Load categories into state (used by produtos/config modules)
+  // Carrega categorias no estado global
   const { data: cats } = await db.from('categorias').select('*').order('ordem');
   State.set('categories', cats || []);
 
-  // Start realtime for badge
+  // Realtime global — eventos chegam aqui e são delegados ao módulo ativo
   startOrdersRealtime({
     onInsert: (order) => {
-      State.update('newCount', n => n + 1);
-      updateBadge();
+      State.update('newCount', n => (n || 0) + 1);
+      _updateBadge();
       toast(`🔔 Novo pedido de ${order.cliente_nome}!`, 'info');
-      // Delegate to pedidos module if active
+
+      // Delega para o módulo de pedidos se estiver ativo
       if (_currentMod === 'pedidos' && _loadedModules.pedidos?.onNewOrder) {
         _loadedModules.pedidos.onNewOrder(order);
       }
@@ -154,13 +147,11 @@ async function init() {
     },
   });
 
-  // Load default module
+  // Módulo padrão
   loadModule('pedidos', document.querySelector('[data-mod="pedidos"]'));
 }
 
-// Expose to window for sidebar onclick
 window.Admin = { loadModule };
-
 document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
