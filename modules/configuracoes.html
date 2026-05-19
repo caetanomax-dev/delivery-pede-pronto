@@ -16,7 +16,8 @@
           <div class="field"><label>Emoji / Logo</label><input id="cfg-emoji" placeholder="🏪" maxlength="4"/></div>
           <div class="field"><label>Nome Fantasia *</label><input id="cfg-fantasia" placeholder="Minha Loja"/></div>
         </div>
-        <div class="field"><label>CNPJ <span id="cnpj-spin" style="display:none">⏳</span></label><input id="cfg-cnpj" placeholder="00.000.000/0001-00" oninput="Configuracoes.maskCNPJ(this)" onblur="Configuracoes.fetchCNPJ(this.value)"/></div>
+        <div class="field"><label>CNPJ <span id="cnpj-spin" style="display:none">⏳</span></label>
+          <input id="cfg-cnpj" placeholder="00.000.000/0001-00" oninput="Configuracoes.maskCNPJ(this)" onblur="Configuracoes.fetchCNPJ(this.value)"/></div>
         <div class="field"><label>Razão Social</label><input id="cfg-razao" placeholder="Empresa Ltda"/></div>
         <div class="field"><label>Inscrição Estadual</label><input id="cfg-ie" placeholder="Isento"/></div>
         <div class="field"><label>Descrição / Slogan</label><input id="cfg-desc" placeholder="Os melhores sabores da cidade!"/></div>
@@ -27,8 +28,11 @@
     <div class="card">
       <div class="cfg-title">📞 Contato</div>
       <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="field"><label>WhatsApp (somente números) *</label><input id="cfg-wpp" type="tel" placeholder="11999999999" oninput="Configuracoes.maskWPP(this)"/></div>
+        <div class="field"><label>WhatsApp (somente números) *</label>
+          <input id="cfg-wpp" type="tel" placeholder="11999999999" oninput="Configuracoes.maskWPP(this)"/></div>
         <div class="field"><label>Telefone</label><input id="cfg-tel" type="tel" placeholder="(11) 3333-4444"/></div>
+        <div class="field"><label>Taxa de Entrega Padrão (R$)</label>
+          <input id="cfg-taxa" type="number" step="0.01" placeholder="0,00"/></div>
       </div>
     </div>
 
@@ -37,7 +41,8 @@
       <div class="cfg-title">📍 Endereço</div>
       <div style="display:flex;flex-direction:column;gap:12px">
         <div class="field-row">
-          <div class="field"><label>CEP <span id="cep-spin" style="display:none">⏳</span></label><input id="cfg-cep" placeholder="00000-000" oninput="Configuracoes.maskCEP(this)" onblur="Configuracoes.fetchCEP(this.value)"/></div>
+          <div class="field"><label>CEP <span id="cep-spin" style="display:none">⏳</span></label>
+            <input id="cfg-cep" placeholder="00000-000" oninput="Configuracoes.maskCEP(this)" onblur="Configuracoes.fetchCEP(this.value)"/></div>
           <div class="field"><label>Número</label><input id="cfg-num" placeholder="123"/></div>
         </div>
         <div class="field"><label>Logradouro</label><input id="cfg-logradouro" placeholder="Rua das Flores"/></div>
@@ -49,25 +54,56 @@
       </div>
     </div>
 
-    <!-- Tema -->
+    <!-- Tema de Cores — HTML estático, sem template literals -->
     <div class="card">
       <div class="cfg-title">🎨 Tema de Cores</div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        ${[
-          ['Fundo',     't-bg'],
-          ['Surface',   't-surface'],
-          ['Card',      't-card'],
-          ['Primária',  't-primary'],
-          ['Destaque',  't-accent'],
-          ['Texto',     't-text'],
-          ['Muted',     't-muted'],
-        ].map(([label, id]) => `
-          <div class="color-row">
-            <input type="color" id="${id}" oninput="Configuracoes.liveTheme()" value="#000000"/>
-            <input type="text" id="${id}-txt" placeholder="#000000" oninput="Configuracoes.syncColor('${id}','${id}-txt')" style="width:100px;font-size:12px"/>
-            <span style="font-size:13px;color:var(--text2);flex:1">${label}</span>
-          </div>`).join('')}
-        <div id="theme-prev" style="padding:14px;border-radius:10px;text-align:center;font-size:13px;font-weight:700;background:#6C63FF;color:#fff;margin-top:4px">✨ Preview do Tema</div>
+
+        <div class="color-row">
+          <input type="color" id="t-bg" value="#0D0F12" oninput="Configuracoes.liveTheme()"/>
+          <input type="text"  id="t-bg-txt" placeholder="#0D0F12" oninput="Configuracoes.syncColor('t-bg','t-bg-txt')" style="width:100px;font-size:12px"/>
+          <span style="font-size:13px;color:var(--text2);flex:1">Fundo</span>
+        </div>
+
+        <div class="color-row">
+          <input type="color" id="t-surface" value="#141619" oninput="Configuracoes.liveTheme()"/>
+          <input type="text"  id="t-surface-txt" placeholder="#141619" oninput="Configuracoes.syncColor('t-surface','t-surface-txt')" style="width:100px;font-size:12px"/>
+          <span style="font-size:13px;color:var(--text2);flex:1">Surface</span>
+        </div>
+
+        <div class="color-row">
+          <input type="color" id="t-card" value="#1A1D22" oninput="Configuracoes.liveTheme()"/>
+          <input type="text"  id="t-card-txt" placeholder="#1A1D22" oninput="Configuracoes.syncColor('t-card','t-card-txt')" style="width:100px;font-size:12px"/>
+          <span style="font-size:13px;color:var(--text2);flex:1">Card</span>
+        </div>
+
+        <div class="color-row">
+          <input type="color" id="t-primary" value="#4F6EF7" oninput="Configuracoes.liveTheme()"/>
+          <input type="text"  id="t-primary-txt" placeholder="#4F6EF7" oninput="Configuracoes.syncColor('t-primary','t-primary-txt')" style="width:100px;font-size:12px"/>
+          <span style="font-size:13px;color:var(--text2);flex:1">Primária</span>
+        </div>
+
+        <div class="color-row">
+          <input type="color" id="t-accent" value="#E05C5C" oninput="Configuracoes.liveTheme()"/>
+          <input type="text"  id="t-accent-txt" placeholder="#E05C5C" oninput="Configuracoes.syncColor('t-accent','t-accent-txt')" style="width:100px;font-size:12px"/>
+          <span style="font-size:13px;color:var(--text2);flex:1">Destaque</span>
+        </div>
+
+        <div class="color-row">
+          <input type="color" id="t-text" value="#E8EAF0" oninput="Configuracoes.liveTheme()"/>
+          <input type="text"  id="t-text-txt" placeholder="#E8EAF0" oninput="Configuracoes.syncColor('t-text','t-text-txt')" style="width:100px;font-size:12px"/>
+          <span style="font-size:13px;color:var(--text2);flex:1">Texto</span>
+        </div>
+
+        <div class="color-row">
+          <input type="color" id="t-muted" value="#5C6370" oninput="Configuracoes.liveTheme()"/>
+          <input type="text"  id="t-muted-txt" placeholder="#5C6370" oninput="Configuracoes.syncColor('t-muted','t-muted-txt')" style="width:100px;font-size:12px"/>
+          <span style="font-size:13px;color:var(--text2);flex:1">Muted</span>
+        </div>
+
+        <div id="theme-prev" style="padding:14px;border-radius:10px;text-align:center;font-size:13px;font-weight:700;background:#4F6EF7;color:#fff;margin-top:6px">
+          ✨ Preview do Tema
+        </div>
         <button class="btn btn-ghost btn-sm" onclick="Configuracoes.resetTheme()" style="align-self:flex-start">↺ Restaurar padrão</button>
       </div>
     </div>

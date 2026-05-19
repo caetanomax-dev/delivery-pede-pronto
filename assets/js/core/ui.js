@@ -59,16 +59,24 @@ export const spinnerHTML = `<div class="loading-wrap"><div class="spinner"></div
 
 // ─── TEMA ────────────────────────────────────────────────────────────────────
 
-const THEME_MAP = {
-  cor_bg: '--bg', cor_surface: '--surface', cor_card: '--card',
-  cor_primary: '--primary', cor_accent: '--accent',
-  cor_text: '--text', cor_muted: '--muted',
-};
+const THEME_MAP = [
+  { db: 'cor_bg',      css: '--bg'      },
+  { db: 'cor_surface', css: '--surface'  },
+  { db: 'cor_card',    css: '--card'     },
+  { db: 'cor_primary', css: '--primary'  },
+  { db: 'cor_accent',  css: '--accent'   },
+  { db: 'cor_text',    css: '--text'     },
+  { db: 'cor_muted',   css: '--muted'    },
+];
 
 export function applyTheme(cfg) {
   if (!cfg) return;
   const r = document.documentElement.style;
-  Object.entries(THEME_MAP).forEach(([k, v]) => { if (cfg[k]) r.setProperty(v, cfg[k]); });
+  THEME_MAP.forEach(({ db, css }) => {
+    if (cfg[db] && /^#[0-9A-Fa-f]{3,8}$/.test(cfg[db].trim())) {
+      r.setProperty(css, cfg[db].trim());
+    }
+  });
 }
 
 // ─── SKELETON ────────────────────────────────────────────────────────────────
