@@ -10,10 +10,10 @@ export const NOTIF_SOUND_URL = 'https://assets.mixkit.co/active_storage/sfx/2869
 
 /** Mapeamento status → próximo status kanban */
 export const KANBAN_COLS = [
-  { key: 'recebido',   label: 'Recebidos',   color: '#FBBF24', next: 'aceito',     nextLabel: 'Aceitar'  },
-  { key: 'aceito',     label: 'Aceitos',      color: '#60A5FA', next: 'preparando', nextLabel: 'Preparar' },
-  { key: 'preparando', label: 'Em Preparo',   color: '#C084FC', next: 'entrega',    nextLabel: 'Enviar'   },
-  { key: 'entrega',    label: 'Em Entrega',   color: '#4ADE80', next: 'finalizado', nextLabel: 'Finalizar'},
+  { key: 'recebido',   label: 'Recebidos',   color: '#D4A43A', next: 'aceito',     nextLabel: 'Aceitar'  },
+  { key: 'aceito',     label: 'Aceitos',      color: '#4A9FE0', next: 'preparando', nextLabel: 'Preparar' },
+  { key: 'preparando', label: 'Em Preparo',   color: '#9B6FD4', next: 'entrega',    nextLabel: 'Enviar'   },
+  { key: 'entrega',    label: 'Em Entrega',   color: '#3DB87A', next: 'finalizado', nextLabel: 'Finalizar'},
 ];
 
 /** Etapas de tracking para o cliente */
@@ -26,11 +26,11 @@ export const TRACK_STEPS = [
 ];
 
 export const STATUS_COLORS = {
-  recebido:   '#FBBF24',
-  aceito:     '#60A5FA',
-  preparando: '#C084FC',
-  entrega:    '#4ADE80',
-  finalizado: '#4ADE80',
+  recebido:   '#D4A43A',
+  aceito:     '#4A9FE0',
+  preparando: '#9B6FD4',
+  entrega:    '#3DB87A',
+  finalizado: '#3DB87A',
 };
 
 export const HIST_PER_PAGE = 10;

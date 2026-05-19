@@ -367,6 +367,19 @@ function _ckNext() {
     if (!num) { toast('Digite o número', 'warn'); ge('ck-num')?.focus(); return; }
   }
   const vals = _saveVals();
+  // Persiste no estado S — campos somem do DOM no step 5 (resumo)
+  Object.entries(vals).forEach(([k, v]) => { if (v) S['f_' + k] = v; });
+  if (vals['ck-tel'])    S.formTel    = vals['ck-tel'];
+  if (vals['ck-nome'])   S.formNome   = vals['ck-nome'];
+  if (vals['ck-obs'])    S.formObs    = vals['ck-obs'];
+  if (vals['ck-rua'])    S.formRua    = vals['ck-rua'];
+  if (vals['ck-num'])    S.formNum    = vals['ck-num'];
+  if (vals['ck-bairro']) S.formBairro = vals['ck-bairro'];
+  if (vals['ck-comp'])   S.formComp   = vals['ck-comp'];
+  if (vals['ck-troco'])  S.formTroco  = vals['ck-troco'];
+  // Save payment selection
+  const pgtoEl = document.querySelector('input[name="pgto"]:checked');
+  if (pgtoEl) S.formPgto = pgtoEl.value;
   S.ckStep++;
   renderCheckoutModal();
   _restoreVals(vals);
@@ -402,16 +415,16 @@ async function _placeOrder() {
 
   const sub   = S.cart.reduce((s, i) => s + (effPrice(i) * i.qty), 0);
   const total = sub + S.deliveryFee;
-  const pgto  = document.querySelector('input[name="pgto"]:checked')?.value || 'Dinheiro';
-  const end   = [ge('ck-rua')?.value?.trim(), ge('ck-num')?.value?.trim(), ge('ck-comp')?.value?.trim(), ge('ck-bairro')?.value?.trim()].filter(Boolean).join(', ');
+  const pgto  = S.formPgto || 'Dinheiro';
+  const end   = [S.formRua, S.formNum, S.formComp, S.formBairro].filter(Boolean).join(', ');
 
   const payload = {
-    cliente_nome:     ge('ck-nome').value.trim(),
+    cliente_nome:     S.formNome     || '',
     cliente_endereco: end,
-    cliente_telefone: ge('ck-tel').value.trim(),
+    cliente_telefone: S.formTel      || '',
     pagamento:        pgto,
-    troco:            parseFloat(ge('ck-troco')?.value) || null,
-    observacoes:      ge('ck-obs')?.value || '',
+    troco:            parseFloat(S.formTroco) || null,
+    observacoes:      S.formObs      || '',
     itens:            JSON.stringify(S.cart.map(i => ({ id: i.id, nome: i.nome, preco: effPrice(i), qty: i.qty }))),
     subtotal:         sub,
     taxa_entrega:     S.deliveryFee,

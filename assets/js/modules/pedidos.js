@@ -117,13 +117,16 @@ function _renderHistorico() {
   const body = ge('hist-body');
   const pag  = ge('hist-pag');
   if (!hist || !body) return;
-  if (!_finalizados.length) { hist.style.display = 'none'; return; }
+  // Mostra apenas finalizados do dia atual
+  const hoje = new Date().toDateString();
+  const todayFin = _finalizados.filter(o => new Date(o.created_at).toDateString() === hoje);
+  if (!todayFin.length) { hist.style.display = 'none'; return; }
   hist.style.display = 'block';
 
-  const total  = _finalizados.length;
+  const total  = todayFin.length;
   const pages  = Math.ceil(total / HIST_PER_PAGE);
   const start  = _histPage * HIST_PER_PAGE;
-  const slice  = _finalizados.slice(start, start + HIST_PER_PAGE);
+  const slice  = todayFin.slice(start, start + HIST_PER_PAGE);
 
   body.innerHTML = slice.map(o => {
     const tel = onlyDigits(o.cliente_telefone || '');
