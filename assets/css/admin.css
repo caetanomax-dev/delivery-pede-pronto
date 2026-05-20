@@ -36,8 +36,13 @@ body { display: flex; min-height: 100vh; overflow-x: hidden; }
 .page-title { font-size: 22px; font-weight: 800; letter-spacing: -.03em; color: var(--text); }
 
 /* ─── KANBAN ──────────────────────────────────── */
-#kanban-wrap { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 12px; align-items: flex-start; }
-.k-col { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 14px; min-width: 240px; max-width: 280px; flex-shrink: 0; }
+#kanban-wrap {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  align-items: flex-start;
+}
+.k-col { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 12px; min-width: 0; }
 .k-col-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding: 8px 12px; border-radius: var(--radius-sm); }
 .k-col-label { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .k-col-count { font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 999px; }
@@ -90,6 +95,9 @@ body { display: flex; min-height: 100vh; overflow-x: hidden; }
 
 /* ─── MOBILE ──────────────────────────────────── */
 #sb-toggle { display: none; position: fixed; top: 14px; left: 14px; z-index: 200; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); width: 38px; height: 38px; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; }
+@media (max-width: 1100px) {
+  #kanban-wrap { grid-template-columns: repeat(2, 1fr); }
+}
 @media (max-width: 768px) {
   #sidebar { transform: translateX(-100%); }
   #sidebar.open { transform: translateX(0); }
@@ -98,6 +106,6 @@ body { display: flex; min-height: 100vh; overflow-x: hidden; }
   #sb-toggle { display: flex; }
   .field-row { grid-template-columns: 1fr; }
   .cfg-grid { grid-template-columns: 1fr; }
-  #kanban-wrap { flex-direction: column; }
-  .k-col { max-width: 100%; min-width: 0; width: 100%; }
+  #kanban-wrap { grid-template-columns: 1fr; }
+  .k-col { width: 100%; }
 }

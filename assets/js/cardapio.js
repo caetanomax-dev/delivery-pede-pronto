@@ -146,7 +146,7 @@ function _buildCheckoutHTML() {
 
   return `
   <div class="modal-overlay" onclick="if(event.target===this)window.__closeModal()">
-    <div class="modal-box" style="max-width:500px">
+    <div class="modal-box modal-box-large">
       <div class="modal-head">
         <div class="modal-title">🛒 Seu Pedido</div>
         <button class="modal-close" onclick="window.__closeModal()">✕</button>
@@ -530,29 +530,53 @@ function renderGrid() {
   const grid = ge('prod-grid');
   const list = S.activeCat === 'all' ? S.products : S.products.filter(p => String(p.categoria_id) === String(S.activeCat));
   if (!list.length) { grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)">Nenhum produto nesta categoria 😔</div>`; return; }
-  grid.innerHTML = list.map(p => `
-    <div class="prod-card" onclick="Cardapio.addToCart(${p.id})">
+  grid.innerHTML = list.map(p => _renderProdCard(p)).join('');
+}
+
+function _renderProdCard(p) {
+  const cartItem = S.cart.find(i => i.id === p.id);
+  const qty = cartItem ? cartItem.qty : 0;
+  const priceHtml = hasOffer(p)
+    ? `<span class="prod-price-old">${fmt(p.preco)}</span><span class="prod-price-new">${fmt(p.preco_oferta)}</span>`
+    : `<span class="prod-price-new">${fmt(p.preco)}</span>`;
+  const footerBtn = qty > 0
+    ? `<div class="prod-qty-ctrl" onclick="event.stopPropagation()">
+         <button class="prod-qty-btn" onclick="Cardapio._cardRemove(${p.id})">−</button>
+         <span class="prod-qty-num">${qty}</span>
+         <button class="prod-qty-btn" onclick="Cardapio._cardAdd(${p.id})">+</button>
+       </div>`
+    : `<button class="prod-add-btn" onclick="event.stopPropagation();Cardapio._cardAdd(${p.id})">＋ Adicionar</button>`;
+  return `
+    <div class="prod-card" id="pcard-${p.id}">
       <div class="prod-img-wrap">
-        ${p.foto_url ? `<img src="${p.foto_url}" alt="${p.nome}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'prod-img-placeholder\\'>${S.storeEmoji}</div>'">` : `<div class="prod-img-placeholder">${S.storeEmoji}</div>`}
+        ${p.foto_url ? `<img src="${p.foto_url}" alt="${p.nome}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'prod-img-placeholder\'>${S.storeEmoji}</div>'">` : `<div class="prod-img-placeholder">${S.storeEmoji}</div>`}
         <div class="prod-img-overlay"></div>
         <div class="prod-badges">
           ${hasOffer(p) ? `<span class="prod-badge-offer">🔥 OFERTA</span>` : ''}
           ${p.destaque_texto ? `<span class="prod-badge-dest">${p.destaque_texto}</span>` : ''}
         </div>
-        <div class="prod-price-area">
-          ${hasOffer(p) ? `<span class="prod-price-old">${fmt(p.preco)}</span><span class="prod-price-new">${fmt(p.preco_oferta)}</span>` : `<span class="prod-price-new">${fmt(p.preco)}</span>`}
-        </div>
+        <div class="prod-price-area">${priceHtml}</div>
       </div>
       <div class="prod-body">
         <div class="prod-card-name">${p.nome}</div>
         ${p.descricao ? `<div class="prod-desc">${p.descricao}</div>` : ''}
         <div class="prod-footer">
-          <span class="prod-delivery${!p.taxa_entrega?' free':''}">${p.taxa_entrega > 0 ? `🚚 ${fmt(p.taxa_entrega)}` : '🚚 Frete grátis'}</span>
-          <button class="prod-add-btn" onclick="event.stopPropagation();Cardapio.addToCart(${p.id})">+ Adicionar</button>
+          <span class="prod-delivery${!p.taxa_entrega ? ' free' : ''}">${p.taxa_entrega > 0 ? `🚚 ${fmt(p.taxa_entrega)}` : '🚚 Grátis'}</span>
+          ${footerBtn}
         </div>
       </div>
-    </div>`).join('');
+    </div>`;
 }
+
+/** Atualiza só o card afetado sem re-renderizar tudo */
+function _updateCard(prodId) {
+  const p = S.products.find(x => x.id === prodId);
+  if (!p) return;
+  const el = document.getElementById(`pcard-${prodId}`);
+  if (!el) return;
+  el.outerHTML = _renderProdCard(p);
+}
+
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 
@@ -563,10 +587,23 @@ async function init() {
   loadMenu();
 }
 
+function _cardAdd(id) {
+  addToCart(id);
+  _updateCard(id);
+  updateCartBadge();
+}
+
+function _cardRemove(id) {
+  removeFromCart(id);
+  _updateCard(id);
+  updateCartBadge();
+}
+
 window.Cardapio = {
   addToCart, openCart, filterCat, backToMenu, showTrack,
   _ckNext, _ckPrev, _addItem, _removeItem, _placeOrder,
   _maskTel, _maskCEP, _fetchCEP, _onTelBlur, _onPgtoChange,
+  _cardAdd, _cardRemove,
 };
 
 document.addEventListener('DOMContentLoaded', init);
