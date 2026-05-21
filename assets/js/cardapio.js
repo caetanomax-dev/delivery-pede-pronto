@@ -79,14 +79,34 @@ async function fetchCEP(raw) {
 
 function _applyStoreTheme(cfg) {
   applyTheme(cfg);
-  if (cfg.logo_emoji) {
-    ge('hdr-icon').textContent   = cfg.logo_emoji;
-    ge('hero-emoji').textContent = cfg.logo_emoji;
-    S.storeEmoji = cfg.logo_emoji;
+
+  const emoji = cfg.logo_emoji || '🏪';
+  S.storeEmoji = emoji;
+
+  // Header — só o ícone pequeno
+  const hdrIcon = ge('hdr-icon');
+  if (hdrIcon) {
+    if (cfg.logo_url) {
+      hdrIcon.innerHTML = `<img src="${cfg.logo_url}" alt="logo" onerror="this.parentNode.textContent='${emoji}'"/>`;
+    } else {
+      hdrIcon.textContent = emoji;
+    }
   }
-  ge('hdr-name').textContent  = cfg.nome_fantasia || 'Nossa Loja';
-  ge('hero-name').textContent = cfg.nome_fantasia || 'Nossa Loja';
-  if (cfg.descricao) ge('hero-desc').textContent = cfg.descricao;
+
+  // Hero — logo grande
+  const heroLogo = ge('hero-logo-img');
+  if (heroLogo) {
+    if (cfg.logo_url) {
+      heroLogo.innerHTML = `<img src="${cfg.logo_url}" alt="logo" onerror="this.parentNode.textContent='${emoji}'"/>`;
+    } else {
+      heroLogo.textContent = emoji;
+    }
+  }
+
+  // Textos
+  const heroName = ge('hero-name');
+  if (heroName) heroName.textContent = cfg.nome_fantasia || 'Nossa Loja';
+  if (cfg.descricao) { const d = ge('hero-desc'); if (d) d.textContent = cfg.descricao; }
   document.title = cfg.nome_fantasia || 'Cardápio';
 }
 

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
   <title>Cardápio</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="assets/css/global.css"/>
@@ -15,11 +15,10 @@
 <div id="toast-wrap"></div>
 <div id="modal-wrap"></div>
 
-<!-- HEADER -->
+<!-- HEADER — só logo + carrinho -->
 <header id="hdr">
   <div id="hdr-logo">
     <div id="hdr-icon">🏪</div>
-    <span id="hdr-name">Cardápio</span>
   </div>
   <button id="cart-btn" onclick="Cardapio.openCart()">
     🛒 Carrinho
@@ -27,18 +26,16 @@
   </button>
 </header>
 
-<!-- CATEGORY BAR -->
-<div id="cat-wrap">
-  <div id="cat-bar"></div>
-</div>
-
 <!-- MENU PAGE -->
 <div id="menu-page">
-  <!-- HERO -->
+
+  <!-- HERO — primeira coisa que aparece -->
   <section id="hero">
-    <p id="hero-desc">Faça seu pedido agora</p>
-    <span id="hero-emoji">🏪</span>
+    <div id="hero-logo-wrap">
+      <div id="hero-logo-img">🏪</div>
+    </div>
     <h1 id="hero-name">Nossa Loja</h1>
+    <p id="hero-desc">Faça seu pedido agora</p>
     <div class="hero-pills">
       <span class="hero-pill">⚡ Entrega rápida</span>
       <span class="hero-pill">💳 Vários pagamentos</span>
@@ -46,7 +43,12 @@
     </div>
   </section>
 
-  <!-- LOADING SKELETON -->
+  <!-- CATEGORIAS — logo abaixo do hero -->
+  <div id="cat-wrap">
+    <div id="cat-bar"></div>
+  </div>
+
+  <!-- LOADING -->
   <div id="menu-loader">
     <div class="spinner"></div>
   </div>
@@ -54,10 +56,10 @@
   <!-- PRODUCTS -->
   <div id="menu-content" style="display:none">
     <div id="prod-wrap">
-      <p class="section-label" id="prod-section-label">Todos os produtos</p>
       <div id="prod-grid"></div>
     </div>
   </div>
+
 </div>
 
 <!-- TRACKING PAGE -->
