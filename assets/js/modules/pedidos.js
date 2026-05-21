@@ -17,8 +17,19 @@ let _histPage = 0;
 
 // ─── PUBLIC API ───────────────────────────────────────────────────────────────
 
+let _autoRefreshTimer = null;
+
 export async function init() {
   await refresh();
+  _startAutoRefresh();
+}
+
+function _startAutoRefresh() {
+  if (_autoRefreshTimer) clearInterval(_autoRefreshTimer);
+  // Auto-atualiza a cada 30 segundos como fallback do realtime
+  _autoRefreshTimer = setInterval(() => {
+    refresh();
+  }, 30000);
 }
 
 /** Chamado pelo admin shell ao receber novo pedido via realtime */

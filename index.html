@@ -11,25 +11,19 @@
   <link rel="stylesheet" href="assets/css/cardapio.css"/>
 </head>
 <body>
-
 <div id="toast-wrap"></div>
 <div id="modal-wrap"></div>
 
-<!-- HEADER — só logo + carrinho -->
+<!-- HEADER — nome aparece ao rolar -->
 <header id="hdr">
-  <div id="hdr-logo">
-    <div id="hdr-icon">🏪</div>
-  </div>
+  <span id="hdr-store-name"></span>
   <button id="cart-btn" onclick="Cardapio.openCart()">
-    🛒 Carrinho
-    <span id="cart-count">0</span>
+    🛒 Carrinho <span id="cart-count">0</span>
   </button>
 </header>
 
-<!-- MENU PAGE -->
 <div id="menu-page">
-
-  <!-- HERO — primeira coisa que aparece -->
+  <!-- HERO -->
   <section id="hero">
     <div id="hero-logo-wrap">
       <div id="hero-logo-img">🏪</div>
@@ -43,23 +37,18 @@
     </div>
   </section>
 
-  <!-- CATEGORIAS — logo abaixo do hero -->
+  <!-- CATEGORIAS -->
   <div id="cat-wrap">
     <div id="cat-bar"></div>
   </div>
 
-  <!-- LOADING -->
-  <div id="menu-loader">
-    <div class="spinner"></div>
-  </div>
+  <div id="menu-loader"><div class="spinner"></div></div>
 
-  <!-- PRODUCTS -->
   <div id="menu-content" style="display:none">
     <div id="prod-wrap">
       <div id="prod-grid"></div>
     </div>
   </div>
-
 </div>
 
 <!-- TRACKING PAGE -->
@@ -69,14 +58,11 @@
       <button onclick="Cardapio.backToMenu()" class="btn btn-ghost btn-sm">← Voltar</button>
       <h2 id="track-label" style="font-size:18px;font-weight:800"></h2>
     </div>
-    <div class="card" style="margin-bottom:18px">
-      <div id="track-steps"></div>
-    </div>
+    <div class="card" style="margin-bottom:18px"><div id="track-steps"></div></div>
     <div id="track-summary" class="card" style="display:none"></div>
   </div>
 </div>
 
-<!-- FAB MOBILE -->
 <button id="cart-fab-mobile" onclick="Cardapio.openCart()">
   🛒 <span id="fab-count">0 itens</span>
 </button>

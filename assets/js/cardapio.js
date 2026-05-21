@@ -79,35 +79,45 @@ async function fetchCEP(raw) {
 
 function _applyStoreTheme(cfg) {
   applyTheme(cfg);
-
   const emoji = cfg.logo_emoji || '🏪';
   S.storeEmoji = emoji;
-
-  // Header — só o ícone pequeno
-  const hdrIcon = ge('hdr-icon');
-  if (hdrIcon) {
-    if (cfg.logo_url) {
-      hdrIcon.innerHTML = `<img src="${cfg.logo_url}" alt="logo" onerror="this.parentNode.textContent='${emoji}'"/>`;
-    } else {
-      hdrIcon.textContent = emoji;
-    }
-  }
 
   // Hero — logo grande
   const heroLogo = ge('hero-logo-img');
   if (heroLogo) {
-    if (cfg.logo_url) {
-      heroLogo.innerHTML = `<img src="${cfg.logo_url}" alt="logo" onerror="this.parentNode.textContent='${emoji}'"/>`;
-    } else {
-      heroLogo.textContent = emoji;
-    }
+    heroLogo.innerHTML = cfg.logo_url
+      ? `<img src="${cfg.logo_url}" alt="logo" onerror="this.textContent='${emoji}'"/>`
+      : emoji;
   }
 
-  // Textos
+  // Header — ícone pequeno (se tiver logo_url usa imagem)
+  const hdrIcon = ge('hdr-icon');
+  if (hdrIcon) {
+    hdrIcon.innerHTML = cfg.logo_url
+      ? `<img src="${cfg.logo_url}" alt="logo" style="width:100%;height:100%;object-fit:cover;border-radius:10px" onerror="this.parentNode.textContent='${emoji}'"/>`
+      : emoji;
+  }
+
+  // Nome no header (aparece ao rolar)
+  const hdrName = ge('hdr-store-name');
+  if (hdrName) hdrName.textContent = cfg.nome_fantasia || '';
+
+  // Hero textos
   const heroName = ge('hero-name');
   if (heroName) heroName.textContent = cfg.nome_fantasia || 'Nossa Loja';
-  if (cfg.descricao) { const d = ge('hero-desc'); if (d) d.textContent = cfg.descricao; }
+  const heroDesc = ge('hero-desc');
+  if (heroDesc && cfg.descricao) heroDesc.textContent = cfg.descricao;
   document.title = cfg.nome_fantasia || 'Cardápio';
+}
+
+function _initScrollHeader() {
+  const hero = document.getElementById('hero');
+  const hdrName = ge('hdr-store-name');
+  if (!hero || !hdrName) return;
+  const observer = new IntersectionObserver(([e]) => {
+    hdrName.classList.toggle('visible', !e.isIntersecting);
+  }, { threshold: 0.1 });
+  observer.observe(hero);
 }
 
 // ─── CARRINHO ─────────────────────────────────────────────────────────────────
@@ -536,6 +546,7 @@ async function loadMenu() {
   renderGrid();
   ge('menu-loader').style.display  = 'none';
   ge('menu-content').style.display = 'block';
+  _initScrollHeader();
 }
 
 function renderCatBar() {
