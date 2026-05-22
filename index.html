@@ -17,9 +17,6 @@
 <!-- HEADER — nome aparece ao rolar -->
 <header id="hdr">
   <span id="hdr-store-name"></span>
-  <button id="cart-btn" onclick="Cardapio.openCart()">
-    🛒 Carrinho <span id="cart-count">0</span>
-  </button>
 </header>
 
 <div id="menu-page">
@@ -32,14 +29,17 @@
     <p id="hero-desc">Faça seu pedido agora</p>
     <div class="hero-pills">
       <span class="hero-pill">⚡ Entrega rápida</span>
-      <span class="hero-pill">💳 Vários pagamentos</span>
       <span class="hero-pill">📱 Acompanhe em tempo real</span>
     </div>
   </section>
 
-  <!-- CATEGORIAS -->
+  <!-- CATEGORIAS + CARRINHO na mesma linha -->
   <div id="cat-wrap">
     <div id="cat-bar"></div>
+    <button id="cart-btn" onclick="Cardapio.openCart()">
+      🛒 <span id="cart-count-txt">Carrinho</span>
+      <span id="cart-count">0</span>
+    </button>
   </div>
 
   <div id="menu-loader"><div class="spinner"></div></div>

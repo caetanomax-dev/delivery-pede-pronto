@@ -6,28 +6,15 @@ body { min-height:100vh; overflow-x:hidden; }
   position:sticky; top:0; z-index:90;
   background:rgba(13,15,18,.96); backdrop-filter:blur(24px);
   border-bottom:1px solid var(--border2);
-  padding:0 20px; height:58px;
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:0 20px; height:52px;
+  display:flex; align-items:center;
 }
 #hdr-store-name {
   font-weight:800; font-size:15px; letter-spacing:-.02em;
   color:var(--text); opacity:0; transition:opacity .3s;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  max-width:200px;
 }
 #hdr-store-name.visible { opacity:1; }
-#cart-btn {
-  background:var(--primary); border:none; border-radius:var(--radius-sm);
-  padding:12px 28px; color:#fff; font-weight:800; font-size:15px;
-  cursor:pointer; display:flex; align-items:center; gap:10px;
-  box-shadow:0 4px 20px var(--primary-glow); transition:all .2s;
-  font-family:'Plus Jakarta Sans',sans-serif; flex-shrink:0;
-}
-#cart-btn:hover { background:var(--primary-hover); transform:translateY(-1px); }
-#cart-count {
-  background:#fff; color:var(--primary); font-size:11px; font-weight:900;
-  border-radius:999px; padding:2px 9px; min-width:22px; text-align:center; display:none;
-}
 
 /* ─── HERO ───────────────────────────────── */
 #hero {
@@ -66,23 +53,38 @@ body { min-height:100vh; overflow-x:hidden; }
   border-radius:999px; padding:6px 16px; font-size:11px; font-weight:600; color:var(--text2);
 }
 
-/* ─── CATEGORIAS ─────────────────────────── */
+/* ─── CATEGORIAS + CARRINHO ──────────────── */
 #cat-wrap {
-  position:sticky; top:58px; z-index:80;
+  position:sticky; top:52px; z-index:80;
   background:rgba(13,15,18,.97); backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border2); padding:0 20px;
+  border-bottom:1px solid var(--border2);
+  padding:0 16px; display:flex; align-items:center; gap:12px;
 }
-#cat-bar { display:flex; gap:8px; overflow-x:auto; padding:12px 0; scrollbar-width:none; }
+#cat-bar { display:flex; gap:8px; overflow-x:auto; padding:10px 0; scrollbar-width:none; flex:1; }
 #cat-bar::-webkit-scrollbar { display:none; }
 .cat-pill {
   flex-shrink:0; display:flex; align-items:center; gap:7px;
-  padding:9px 20px; border-radius:999px; border:1.5px solid var(--border);
+  padding:8px 18px; border-radius:999px; border:1.5px solid var(--border);
   background:transparent; color:var(--muted); cursor:pointer;
   font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:13px;
   transition:all .22s; white-space:nowrap;
 }
 .cat-pill:hover  { border-color:rgba(79,110,247,.4); color:var(--text); background:rgba(79,110,247,.06); }
-.cat-pill.active { background:var(--primary); border-color:var(--primary); color:#fff; box-shadow:0 4px 16px var(--primary-glow); }
+.cat-pill.active { background:var(--primary) !important; border-color:var(--primary) !important; color:#fff !important; box-shadow:0 4px 16px var(--primary-glow); }
+
+/* Carrinho dentro da barra de categorias */
+#cart-btn {
+  flex-shrink:0; background:var(--primary); border:none; border-radius:var(--radius-sm);
+  padding:9px 20px; color:#fff; font-weight:800; font-size:13px;
+  cursor:pointer; display:flex; align-items:center; gap:8px;
+  box-shadow:0 4px 16px var(--primary-glow); transition:all .2s;
+  font-family:'Plus Jakarta Sans',sans-serif; white-space:nowrap;
+}
+#cart-btn:hover { background:var(--primary-hover); transform:translateY(-1px); }
+#cart-count {
+  background:#fff; color:var(--primary); font-size:11px; font-weight:900;
+  border-radius:999px; padding:2px 8px; min-width:20px; text-align:center; display:none;
+}
 
 /* ─── PRODUTOS ───────────────────────────── */
 #prod-wrap { padding:24px 20px 140px; }
@@ -143,7 +145,7 @@ body { min-height:100vh; overflow-x:hidden; }
   box-shadow:0 8px 32px var(--primary-glow);
   display:none; align-items:center; gap:10px; white-space:nowrap;
 }
-@media(max-width:640px){ #cart-fab-mobile{display:flex;} #cart-btn{display:none!important;} }
+@media(max-width:640px){ #cart-fab-mobile{display:flex;} }
 
 /* ─── CHECKOUT MODAL ──────────────────────── */
 .modal-box-large {

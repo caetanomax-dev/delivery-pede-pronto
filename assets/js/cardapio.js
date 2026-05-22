@@ -123,11 +123,13 @@ function _initScrollHeader() {
 // ─── CARRINHO ─────────────────────────────────────────────────────────────────
 
 function updateCartBadge() {
-  const total  = S.cart.reduce((s, i) => s + i.qty, 0);
+  const total   = S.cart.reduce((s, i) => s + i.qty, 0);
   const countEl = ge('cart-count');
   const fabEl   = ge('fab-count');
+  const txtEl   = ge('cart-count-txt');
   if (countEl) { countEl.textContent = total; countEl.style.display = total > 0 ? 'inline-block' : 'none'; }
   if (fabEl)   fabEl.textContent = `${total} iten${total !== 1 ? 's' : 'm'}`;
+  if (txtEl)   txtEl.textContent = total > 0 ? `${total} iten${total !== 1 ? 's' : 'm'}` : 'Carrinho';
 }
 
 function addToCart(prodId) {
@@ -547,6 +549,17 @@ async function loadMenu() {
   ge('menu-loader').style.display  = 'none';
   ge('menu-content').style.display = 'block';
   _initScrollHeader();
+  _startMenuAutoRefresh();
+}
+
+let _menuRefreshTimer = null;
+function _startMenuAutoRefresh() {
+  if (_menuRefreshTimer) clearInterval(_menuRefreshTimer);
+  // Atualiza produtos e categorias a cada 60 segundos
+  _menuRefreshTimer = setInterval(async () => {
+    const { data: prods } = await db.from('produtos').select('*,categorias(nome,icone)').eq('ativo', true).order('nome');
+    if (prods) { S.products = prods; renderGrid(); }
+  }, 60000);
 }
 
 function renderCatBar() {
