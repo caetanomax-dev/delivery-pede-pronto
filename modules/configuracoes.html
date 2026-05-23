@@ -2,7 +2,7 @@
 <div style="display:flex;flex-direction:column;gap:22px">
   <div class="page-header">
     <h2 class="page-title">⚙️ Configurações</h2>
-    <button class="btn btn-primary" onclick="Configuracoes.save()" style="padding:13px 32px;font-size:15px">💾 Salvar</button>
+    <button class="btn btn-primary" onclick="Configuracoes.save()" style="padding:13px 32px;font-size:15px">💾 Salvar Tudo</button>
   </div>
 
   <div class="cfg-grid">
@@ -12,14 +12,15 @@
       <div class="cfg-title">🏪 Dados da Loja</div>
       <div style="display:flex;flex-direction:column;gap:12px">
         <div class="field-row">
-          <div class="field"><label>Emoji</label><input id="cfg-emoji" placeholder="🏪" maxlength="4"/></div>
+          <div class="field"><label>Emoji</label><input id="cfg-emoji" placeholder="🍕" maxlength="4"/></div>
           <div class="field"><label>Nome Fantasia *</label><input id="cfg-fantasia" placeholder="Minha Loja"/></div>
         </div>
         <div class="field">
           <label>URL da Logo (imagem)</label>
           <input id="cfg-logo-url" placeholder="https://..." oninput="Configuracoes.previewLogo(this.value)"/>
-          <div id="logo-preview" style="display:none;margin-top:8px">
-            <img id="logo-preview-img" style="width:80px;height:80px;object-fit:cover;border-radius:12px;border:1px solid var(--border)"/>
+          <div id="logo-preview" style="display:none;margin-top:8px;display:flex;align-items:center;gap:12px">
+            <img id="logo-preview-img" style="width:72px;height:72px;object-fit:cover;border-radius:12px;border:1px solid var(--border)"/>
+            <span style="font-size:12px;color:var(--muted)">Preview da logo</span>
           </div>
         </div>
         <div class="field"><label>Descrição / Slogan</label><input id="cfg-desc" placeholder="Os melhores sabores!"/></div>
@@ -31,13 +32,41 @@
 
     <!-- Contato -->
     <div class="card">
-      <div class="cfg-title">📞 Contato</div>
+      <div class="cfg-title">📞 Contato & Entrega</div>
       <div style="display:flex;flex-direction:column;gap:12px">
         <div class="field"><label>WhatsApp * (só números)</label>
           <input id="cfg-wpp" type="tel" placeholder="11999999999" oninput="Configuracoes.maskWPP(this)"/></div>
         <div class="field"><label>Telefone</label><input id="cfg-tel" type="tel" placeholder="(11) 3333-4444"/></div>
         <div class="field"><label>Taxa de Entrega Padrão (R$)</label>
-          <input id="cfg-taxa" type="number" step="0.01" min="0" placeholder="0,00"/></div>
+          <input id="cfg-taxa" type="number" step="0.01" min="0" placeholder="0,00"/>
+          <small style="color:var(--muted);font-size:11px">Usada quando o bairro não tem taxa específica</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Horário de Funcionamento -->
+    <div class="card">
+      <div class="cfg-title">🕐 Horário de Funcionamento</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--card);border-radius:var(--radius-sm)">
+          <label class="tog"><input type="checkbox" id="cfg-aberto" onchange="Configuracoes.toggleAberto(this.checked)"/><span class="tog-sl"></span></label>
+          <div>
+            <div style="font-weight:700;font-size:14px" id="aberto-label">Loja Fechada</div>
+            <div style="font-size:12px;color:var(--muted)">Ative para abrir a loja agora</div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Horário de Abertura</label><input type="time" id="cfg-hora-abre" value="08:00"/></div>
+          <div class="field"><label>Horário de Fechamento</label><input type="time" id="cfg-hora-fecha" value="22:00"/></div>
+        </div>
+        <div class="field">
+          <label>Mensagem quando fechado</label>
+          <textarea id="cfg-msg-fechado" rows="2" placeholder="Estamos fechados no momento. Retornamos às 08:00 😊"></textarea>
+        </div>
+        <div style="background:var(--card);border-radius:var(--radius-sm);padding:12px;font-size:12px">
+          <strong>Dias de funcionamento:</strong>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap" id="dias-wrap"></div>
+        </div>
       </div>
     </div>
 
@@ -52,20 +81,19 @@
         </div>
         <div class="field"><label>Logradouro</label><input id="cfg-logradouro" placeholder="Rua das Flores"/></div>
         <div class="field-row">
-          <div class="field"><label>Bairro</label><input id="cfg-bairro" placeholder="Centro"/></div>
+          <div class="field"><label>Bairro</label><input id="cfg-bairro-end" placeholder="Centro"/></div>
           <div class="field"><label>Cidade / UF</label><input id="cfg-cidade" placeholder="São Paulo / SP"/></div>
         </div>
-        <div class="field"><label>Complemento</label><input id="cfg-comp" placeholder="Sala 1..."/></div>
       </div>
     </div>
 
-    <!-- Tema — seleção simples -->
+    <!-- Tema -->
     <div class="card">
       <div class="cfg-title">🎨 Tema Visual</div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Escolha um tema pronto. Simples e bonito!</p>
-      <div id="theme-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px"></div>
-      <div id="theme-preview-bar" style="height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;transition:all .3s">
-        ✨ Preview
+      <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Escolha um tema pronto</p>
+      <div id="theme-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px"></div>
+      <div id="theme-preview-bar" style="height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;transition:all .3s;background:var(--primary);color:#fff">
+        ✨ Tema atual
       </div>
     </div>
 

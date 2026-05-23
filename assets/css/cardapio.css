@@ -16,46 +16,42 @@ body { min-height:100vh; overflow-x:hidden; }
 }
 #hdr-store-name.visible { opacity:1; }
 
-/* ─── HERO ───────────────────────────────── */
+/* ─── HERO — menor e sticky ──────────────── */
 #hero {
-  padding:48px 24px 36px; text-align:center; position:relative; overflow:hidden;
-  background:linear-gradient(180deg,rgba(79,110,247,.06) 0%,transparent 100%);
+  position:sticky; top:52px; z-index:85;
+  padding:16px 24px; text-align:center; position:relative; overflow:hidden;
+  background:rgba(13,15,18,.97); backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border2);
+  display:flex; align-items:center; gap:14px; justify-content:center;
 }
-#hero::before {
-  content:''; position:absolute; top:0; left:0; right:0; bottom:0;
-  background:radial-gradient(ellipse at 50% 0%,rgba(79,110,247,.12) 0%,transparent 65%);
-  pointer-events:none;
-}
-#hero-logo-wrap { display:flex; justify-content:center; margin-bottom:18px; position:relative; }
+#hero::before { display:none; }
+#hero-logo-wrap { margin:0; flex-shrink:0; }
 #hero-logo-img {
-  width:100px; height:100px; border-radius:24px;
+  width:44px; height:44px; border-radius:12px;
   background:var(--primary); display:flex; align-items:center;
-  justify-content:center; font-size:52px;
-  box-shadow:0 12px 40px var(--primary-glow),0 0 0 6px rgba(79,110,247,.15);
-  overflow:hidden; animation:float 3.5s ease-in-out infinite;
+  justify-content:center; font-size:22px;
+  box-shadow:0 4px 16px var(--primary-glow);
+  overflow:hidden; animation:none;
 }
-#hero-logo-img img { width:100%; height:100%; object-fit:cover; border-radius:24px; }
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+#hero-logo-img img { width:100%; height:100%; object-fit:cover; border-radius:12px; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
 #hero h1 {
-  font-size:clamp(28px,6vw,52px); font-weight:800; letter-spacing:-.03em;
-  line-height:1.05; margin-bottom:10px; position:relative;
-  background:linear-gradient(135deg,var(--text) 0%,rgba(232,234,240,.75) 100%);
+  font-size:clamp(16px,3vw,22px); font-weight:800; letter-spacing:-.02em;
+  line-height:1.1; margin-bottom:2px;
+  background:linear-gradient(135deg,var(--text) 0%,rgba(232,234,240,.8) 100%);
   -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
 }
 #hero-desc {
-  color:var(--muted); font-size:13px; font-weight:600;
-  letter-spacing:.1em; text-transform:uppercase; position:relative; margin-bottom:20px;
+  color:var(--muted); font-size:11px; font-weight:600;
+  letter-spacing:.06em; text-transform:uppercase; margin-bottom:0;
 }
-.hero-pills { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
-.hero-pill  {
-  display:inline-flex; align-items:center; gap:6px;
-  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
-  border-radius:999px; padding:6px 16px; font-size:11px; font-weight:600; color:var(--text2);
-}
+.hero-text { display:flex; flex-direction:column; align-items:flex-start; text-align:left; }
+.hero-pills { display:none; }
+.hero-pill  { display:none; }
 
 /* ─── CATEGORIAS + CARRINHO ──────────────── */
 #cat-wrap {
-  position:sticky; top:52px; z-index:80;
+  position:sticky; top:110px; z-index:80;
   background:rgba(13,15,18,.97); backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border2);
   padding:0 16px; display:flex; align-items:center; gap:12px;

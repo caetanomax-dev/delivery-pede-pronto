@@ -110,6 +110,10 @@ function _renderKanban() {
 function _renderKCard(o, col) {
   const items = JSON.parse(o.itens || '[]');
   const hora  = fmtDate(o.created_at);
+  const denyBtn = col.key === 'recebido'
+    ? `<button class="k-advance" style="background:rgba(224,92,92,.15);color:var(--accent);border:1px solid rgba(224,92,92,.3);margin-top:6px;width:100%"
+        onclick="event.stopPropagation();Pedidos.denyOrder(${o.id})">✕ Recusar</button>`
+    : '';
   return `<div class="k-card" onclick="Pedidos.openDetail(${o.id})">
     <div class="k-card-id" style="color:${col.color}">#${o.id} <span style="font-size:10px;color:var(--muted);font-weight:500">${hora}</span></div>
     <div class="k-card-name">${o.cliente_nome}</div>
@@ -120,6 +124,7 @@ function _renderKCard(o, col) {
       <button class="k-advance" style="background:${col.color};color:#111"
         onclick="event.stopPropagation();Pedidos.advance(${o.id},'${col.next}')">${col.nextLabel} →</button>
     </div>
+    ${denyBtn}
   </div>`;
 }
 
@@ -392,5 +397,33 @@ function _doPrint(html) {
 
 export function goHistPage(p) { _histPage = p; _renderHistorico(); }
 
+export async function denyOrder(id) {
+  const all = [...Object.values(_orders).flat(), ..._finalizados];
+  const o = all.find(x => x.id === id) || (await db.from('pedidos').select('*').eq('id', id).single()).data;
+  if (!o) return;
+
+  const MENSAGENS = [
+    'Olá! Infelizmente não conseguiremos atender seu pedido agora pois estamos com muita demanda. Pedimos desculpas e esperamos atendê-lo em breve! 😊',
+    'Olá! Seu pedido não pôde ser processado no momento por questões operacionais. Pedimos desculpas pelo inconveniente! 🙏',
+    'Olá! Tivemos um imprevisto e não conseguimos atender seu pedido agora. Em breve estaremos prontos para servi-lo melhor! 😊',
+    'Olá! Infelizmente estamos sem o ingrediente principal do seu pedido no momento. Pedimos desculpas! Tente novamente mais tarde. 🙏',
+  ];
+  const msg = MENSAGENS[Math.floor(Math.random() * MENSAGENS.length)];
+
+  if (!confirm(`Recusar pedido #${id} de ${o.cliente_nome} e enviar mensagem ao cliente?`)) return;
+
+  // Marca como cancelado
+  await db.from('pedidos').update({ status: 'cancelado' }).eq('id', id);
+
+  // Abre WhatsApp com mensagem suave
+  const tel = onlyDigits(o.cliente_telefone || '');
+  if (tel) {
+    window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  toast(`Pedido #${id} recusado`, 'info');
+  await refresh();
+}
+
 // Expõe para onclick inline
-window.Pedidos = { refresh, advance, openDetail, wpp, print, goHistPage, openFechamento, printFechamento, csvFechamento };
+window.Pedidos = { refresh, advance, openDetail, wpp, print, goHistPage, openFechamento, printFechamento, csvFechamento, denyOrder };

@@ -154,9 +154,49 @@ function removeFromCart(prodId) {
 
 function openCart() {
   if (!S.cart.length) { toast('Seu carrinho está vazio 🛒', 'warn'); return; }
+
+  // Verifica se loja está aberta
+  const cfg = S.config;
+  if (cfg.loja_aberta === false) {
+    _showLojaFechada(cfg);
+    return;
+  }
+
+  // Verifica horário
+  if (cfg.hora_abertura && cfg.hora_fechamento) {
+    const now   = new Date();
+    const hNow  = now.getHours() * 60 + now.getMinutes();
+    const [ha, ma] = (cfg.hora_abertura).split(':').map(Number);
+    const [hf, mf] = (cfg.hora_fechamento).split(':').map(Number);
+    const abre  = ha * 60 + ma;
+    const fecha = hf * 60 + mf;
+    if (hNow < abre || hNow >= fecha) {
+      _showLojaFechada(cfg);
+      return;
+    }
+  }
+
   S.ckStep = 1;
   S.deliveryFee = 0;
   renderCheckoutModal();
+}
+
+function _showLojaFechada(cfg) {
+  const msg = cfg.msg_fechado || 'Estamos fechados no momento 😔';
+  const abre  = cfg.hora_abertura  || '08:00';
+  const fecha = cfg.hora_fechamento || '22:00';
+  openModal(`
+    <div class="modal-overlay" onclick="if(event.target===this)window.__closeModal()">
+      <div class="modal-box" style="max-width:400px;text-align:center;gap:16px">
+        <div style="font-size:56px">🔒</div>
+        <div class="modal-title" style="justify-content:center">Loja Fechada</div>
+        <p style="color:var(--text2);font-size:14px;line-height:1.7">${msg}</p>
+        <div style="background:var(--card);border-radius:var(--radius-sm);padding:14px;font-size:13px;color:var(--muted)">
+          ⏰ Horário de funcionamento: <strong style="color:var(--text)">${abre} às ${fecha}</strong>
+        </div>
+        <button class="btn btn-primary" onclick="window.__closeModal()" style="width:100%;justify-content:center">Entendi</button>
+      </div>
+    </div>`);
 }
 
 function renderCheckoutModal() {
@@ -555,11 +595,11 @@ async function loadMenu() {
 let _menuRefreshTimer = null;
 function _startMenuAutoRefresh() {
   if (_menuRefreshTimer) clearInterval(_menuRefreshTimer);
-  // Atualiza produtos e categorias a cada 60 segundos
-  _menuRefreshTimer = setInterval(async () => {
-    const { data: prods } = await db.from('produtos').select('*,categorias(nome,icone)').eq('ativo', true).order('nome');
-    if (prods) { S.products = prods; renderGrid(); }
-  }, 60000);
+  // Recarrega a página completa a cada 3 minutos (garante produtos, imagens e categorias atualizados)
+  _menuRefreshTimer = setTimeout(() => {
+    if (!document.hidden) location.reload();
+    else _startMenuAutoRefresh(); // tenta de novo se a aba estiver oculta
+  }, 3 * 60 * 1000);
 }
 
 function renderCatBar() {
